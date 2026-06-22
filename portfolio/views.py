@@ -149,7 +149,8 @@ class HobbyViewSet(viewsets.ModelViewSet):
 
 class ProjectViewSet(viewsets.ModelViewSet):
     """
-    CRUD API for projects.
+    CRUD API for portfolio projects.
+    Returns project features and gallery images.
     """
 
     serializer_class = ProjectSerializer
@@ -175,10 +176,12 @@ class ProjectViewSet(viewsets.ModelViewSet):
         return (
             Project.objects
             .filter(is_active=True)
-            .prefetch_related("features")
+            .prefetch_related(
+                "features",
+                "gallery",
+            )
             .order_by("display_order")
         )
-
 
 # ==========================================================
 # Testimonials API

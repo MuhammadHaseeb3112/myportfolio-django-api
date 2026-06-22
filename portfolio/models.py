@@ -262,6 +262,42 @@ class ProjectFeature(BaseModel):
 
     def __str__(self):
         return self.title
+    
+
+# ==========================================================
+# Project Images
+# ==========================================================
+
+
+class ProjectImage(BaseModel):
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        related_name="gallery"
+    )
+
+    image = models.ImageField(
+        upload_to="projects/gallery/"
+    )
+
+    caption = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Example: Dashboard, Login Page, Analytics"
+    )
+
+    display_order = models.PositiveIntegerField(
+        default=1
+    )
+
+    class Meta:
+        ordering = ["display_order"]
+        verbose_name = "Project Image"
+        verbose_name_plural = "Project Images"
+
+    def __str__(self):
+        return f"{self.project.title} - Image {self.display_order}"
+
 
 
 # ==========================================================
@@ -310,3 +346,4 @@ class ContactMessage(BaseModel):
 
     def __str__(self):
         return self.name
+    

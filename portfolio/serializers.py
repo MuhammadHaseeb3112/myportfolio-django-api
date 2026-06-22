@@ -7,6 +7,7 @@ from .models import (
     Hobby,
     Project,
     ProjectFeature,
+    ProjectImage,
     Testimonial,
     ContactMessage,
 )
@@ -60,8 +61,36 @@ class ProjectFeatureSerializer(serializers.ModelSerializer):
 
 
 # ==========================================================
+# Project Image Serializer
+# ==========================================================
+
+class ProjectImageSerializer(serializers.ModelSerializer):
+
+    image_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ProjectImage
+        fields = (
+            "id",
+            "caption",
+            "image",
+            "image_url",
+            "display_order",
+        )
+
+    def get_image_url(self, obj):
+        request = self.context.get("request")
+
+        if obj.image and request:
+            return request.build_absolute_uri(obj.image.url)
+
+        return None
+
+
+# ==========================================================
 # Project Serializer
 # ==========================================================
+
 class ProjectSerializer(serializers.ModelSerializer):
 
     image_url = serializers.SerializerMethodField()
@@ -71,8 +100,14 @@ class ProjectSerializer(serializers.ModelSerializer):
         read_only=True
     )
 
+    gallery = ProjectImageSerializer(
+        many=True,
+        read_only=True
+    )
+
     class Meta:
         model = Project
+
         fields = (
             "id",
             "company",
@@ -80,23 +115,33 @@ class ProjectSerializer(serializers.ModelSerializer):
             "title",
             "slug",
             "description",
+
             "image",
             "image_url",
+
+            "gallery",
+
             "github_url",
             "live_url",
+
             "featured",
             "display_order",
             "is_active",
+
             "features",
+
             "created_at",
             "updated_at",
         )
 
     def get_image_url(self, obj):
         request = self.context.get("request")
+
         if obj.image and request:
             return request.build_absolute_uri(obj.image.url)
+
         return None
+
 
 # ==========================================================
 # Testimonial Serializer

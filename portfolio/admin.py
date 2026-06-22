@@ -10,6 +10,8 @@ from .models import (
     ProjectFeature,
     Testimonial,
     ContactMessage,
+
+    ProjectImage,      # <-- Add
 )
 
 
@@ -22,6 +24,25 @@ class ProjectFeatureInline(admin.TabularInline):
     extra = 1
     min_num = 1
 
+
+# ==========================================================
+# Project Image Inline
+# ==========================================================
+
+class ProjectImageInline(admin.TabularInline):
+    model = ProjectImage
+    extra = 1
+    min_num = 0
+
+    fields = (
+        "image",
+        "caption",
+        "display_order",
+    )
+
+    ordering = (
+        "display_order",
+    )
 
 # ==========================================================
 # Portfolio Profile
@@ -185,7 +206,10 @@ class HobbyAdmin(admin.ModelAdmin):
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
 
-    inlines = [ProjectFeatureInline]
+    inlines = [
+        ProjectFeatureInline,
+        ProjectImageInline,
+    ]
 
     list_display = (
         "title",
